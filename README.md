@@ -4,7 +4,7 @@
 
 ### 1.1 NebulasDB
 
-NebulasDB是一款基于星云链、去中心化、非关系型的数据库，
+NebulasDB是一款基于[星云链](http://nebulas.io)、去中心化、非关系型的数据库，
 并且提供了JS-SDK、客户端控制台方便开发进行数据操作。
 
 ### 1.2 JS-SDK
