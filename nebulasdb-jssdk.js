@@ -54,10 +54,14 @@ var Table=(function(){
 						_nebulasdb.checkTx(response.msg, function(resp){
 							if(_nebulasdb.checkResponseError(resp)){
 								callback({code:400, msg:resp, data:null});
-							}else{
-								var respJson = JSON.parse(resp);
-								callback(respJson);
-							}
+                            }else{
+                                try{
+                                    var respJson = JSON.parse(resp);
+                                    callback(respJson);
+								}catch(e){
+                                    callback({code:200, msg:"success", data:"Response length > 255, so it won't show you."});
+								}
+                            }
 						});
 					}else{
 						callback(response);
@@ -85,8 +89,12 @@ var Table=(function(){
 							if(_nebulasdb.checkResponseError(resp)){
 								callback({code:400, msg:resp, data:null});
 							}else{
-								var respJson = JSON.parse(resp);
-								callback(respJson);
+                                try{
+                                    var respJson = JSON.parse(resp);
+                                    callback(respJson);
+                                }catch(e){
+                                    callback({code:200, msg:"success", data:"Response length > 255, so it won't show you."});
+                                }
 							}
 						});
 					}else{
@@ -116,8 +124,12 @@ var Table=(function(){
 							if(_nebulasdb.checkResponseError(resp)){
 								callback({code:400, msg:resp, data:null});
 							}else{
-								var respJson = JSON.parse(resp);
-								callback(respJson);
+                                try{
+                                    var respJson = JSON.parse(resp);
+                                    callback(respJson);
+                                }catch(e){
+                                    callback({code:200, msg:"success", data:"Response length > 255, so it won't show you."});
+                                }
 							}
 						});
 					}else{
