@@ -17,7 +17,7 @@ JS-SDK是调用NebulasDB的Javascript工具包,在项目中引入`nebulasdb-jssd
 
 ### 1.3 依赖
 
-nebulasdb-sdk依赖了jQuery
+nebulasdb-sdk依赖了jQuery和搜狐IP服务
 
 
 依赖 | 版本
@@ -31,6 +31,8 @@ nebulasdb-sdk依赖了jQuery
 
 - Html内直接引入即可：
 ```
+<!-- sohu一定要比sdk前 -->
+<script type="text/javascript" src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <script src="nebulasdb-jssdk.js" type="text/javascript"></script>
 ```
