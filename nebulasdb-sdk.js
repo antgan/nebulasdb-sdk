@@ -1,4 +1,4 @@
-var SERVER_URL = "http://localhost:8888";
+var SERVER_URL = "http://www.soecode.cn:8888";
 
 var Table=(function(){ 
 	return function(nebulasdb, userAddress, environment){
@@ -17,14 +17,14 @@ var Table=(function(){
 				data:{
 					DBId : this.parentId,
 					tableId : this.id,
-					env : environment,
+					env : environment + "-" + returnCitySN.cip,
 					address : loginAddress
 				},
 				success:function(response){
 					if(response.code == 200){
 						_nebulasdb.checkTx(response.msg, function(resp){
 							if(_nebulasdb.checkResponseError(resp)){
-								callback(resp);
+								callback({code:400, msg:resp, data:null});
 							}else{
 								var respJson = JSON.parse(resp);
 								_nebulasdb.removeDBTableField(dbName, tableName);
@@ -32,7 +32,7 @@ var Table=(function(){
 							}
 						});
 					}else{
-						throw Error(JSON.stringify(response));
+						callback(response);
 					}
 				}
 			});
@@ -46,21 +46,21 @@ var Table=(function(){
 				data:{
 					tableId : this.id,
 					record : JSON.stringify(record),
-					env : environment,
+					env : environment + "-" + returnCitySN.cip,
 					address : loginAddress
 				},
 				success:function(response){
 					if(response.code == 200){
 						_nebulasdb.checkTx(response.msg, function(resp){
 							if(_nebulasdb.checkResponseError(resp)){
-								callback(resp);
+								callback({code:400, msg:resp, data:null});
 							}else{
 								var respJson = JSON.parse(resp);
 								callback(respJson);
 							}
 						});
 					}else{
-						throw Error(JSON.stringify(response));
+						callback(response);
 					}
 				}
 			});
@@ -76,21 +76,21 @@ var Table=(function(){
 				data:{
 					tableId : this.id,
 					query : JSON.stringify(query),
-					env : environment,
+					env : environment + "-" + returnCitySN.cip,
 					address : loginAddress
 				},
 				success:function(response){
 					if(response.code == 200){
 						_nebulasdb.checkTx(response.msg, function(resp){
 							if(_nebulasdb.checkResponseError(resp)){
-								callback(resp);
+								callback({code:400, msg:resp, data:null});
 							}else{
 								var respJson = JSON.parse(resp);
 								callback(respJson);
 							}
 						});
 					}else{
-						throw Error(JSON.stringify(response));
+						callback(response);
 					}
 				}
 			});
@@ -107,21 +107,21 @@ var Table=(function(){
 					query : JSON.stringify(query),
 					update : JSON.stringify(update),
 					option : JSON.stringify(option),
-					env : environment,
+					env : environment + "-" + returnCitySN.cip,
 					address : loginAddress
 				},
 				success:function(response){
 					if(response.code == 200){
 						_nebulasdb.checkTx(response.msg, function(resp){
 							if(_nebulasdb.checkResponseError(resp)){
-								callback(resp);
+								callback({code:400, msg:resp, data:null});
 							}else{
 								var respJson = JSON.parse(resp);
 								callback(respJson);
 							}
 						});
 					}else{
-						throw Error(JSON.stringify(response));
+						callback(response);
 					}
 				}
 			});
@@ -138,19 +138,19 @@ var Table=(function(){
 					query : JSON.stringify(query),
 					offset : offset,
 					limit : limit,
-					env : environment,
+					env : environment + "-" + returnCitySN.cip,
 					address : loginAddress
 				},
 				success:function(response){
 					if(response.code == 200 && response.data){
 						if(response.data.indexOf("Error") >= 0){
-							throw Error(JSON.stringify(response));
+							callback(response);
 						}else{
 							var result = JSON.parse(response.data);
 							callback(result.data);
 						}
 					}else{
-						throw Error(JSON.stringify(response));
+						callback(response);
 					}
 				}
 			});
@@ -173,14 +173,14 @@ var DB = (function(){
 				data:{
 					DBId : this.id,
 					tableName : tableName,
-					env : environment,
+					env : environment + "-" + returnCitySN.cip,
 					address : loginAddress
 				},
 				success:function(response){
 					if(response.code == 200){
 						_nebulasdb.checkTx(response.msg, function(resp){
 							if(_nebulasdb.checkResponseError(resp)){
-								callback(resp);
+								callback({code:400, msg:resp, data:null});
 							}else{
 								var respJson = JSON.parse(resp);
 								_nebulasdb.reConnect();
@@ -188,7 +188,7 @@ var DB = (function(){
 							}
 						});
 					}else{
-						throw Error(JSON.stringify(response));
+						callback(response);
 					}
 				}
 			});
@@ -204,14 +204,14 @@ var DB = (function(){
 				data:{
 					userAddress : this.parentId,
 					DBId : this.id,
-					env : environment,
+					env : environment + "-" + returnCitySN.cip,
 					address : loginAddress
 				},
 				success:function(response){
 					if(response.code == 200){
 						_nebulasdb.checkTx(response.msg, function(resp){
 							if(_nebulasdb.checkResponseError(resp)){
-								callback(resp);
+								callback({code:400, msg:resp, data:null});
 							}else{
 								var respJson = JSON.parse(resp);
 								_nebulasdb.removeDBField(dbName)
@@ -219,7 +219,7 @@ var DB = (function(){
 							}
 						});
 					}else{
-						throw Error(JSON.stringify(response));
+						callback(response);
 					}
 				}
 			});
@@ -229,6 +229,9 @@ var DB = (function(){
 
 var NebulasDB = (function(){
 	return function(userAddress, environment){
+		if(!returnCitySN){
+            throw Error("NebulasDB-SDK rely on the [http://pv.sohu.com/cityjson?ie=utf-8] toolkit. You can read doc from: https://github.com/antgan/nebulasdb-sdk");
+		}
 		var _environment, _userAddress;
 		if(!userAddress){
 			throw Error("User can't be empty! please call setUser()");
@@ -282,15 +285,12 @@ var NebulasDB = (function(){
 				url:_serverUrl+"/api/user/exist",
 				data:{
 					address:userAddress,
-					env:environment,
+					env:environment + "-" + returnCitySN.cip,
 				},
 				success:function(response){
 					if(response.data === "true"){
 		    			isExist = true;
 		    		}
-				},
-				error:function(error){
-					throw Error(JSON.stringify(error));
 				}
 			});
 			return isExist;
@@ -304,7 +304,7 @@ var NebulasDB = (function(){
 				async:false,
 				url:_serverUrl+"/api/db/"+userAddress,
 				data:{
-					env : environment,
+					env : environment + "-" + returnCitySN.cip,
 					address : userAddress
 				},
 				success:function(responseForDB){
@@ -321,7 +321,7 @@ var NebulasDB = (function(){
 								async:false,
 								url:_serverUrl+"/api/db/table/"+dbId,
 								data:{
-									env : environment,
+									env : environment + "-" + returnCitySN.cip,
 									address : userAddress
 								},
 								success:function(responseForTable){
@@ -344,7 +344,8 @@ var NebulasDB = (function(){
 			var userAddress = this.getUser();
 			var environment = this.getEnvironment();
 			if(!userAddress){
-				throw Error("User can't be empty! please call setUser()");
+				callback({code:400, msg:"User can't be empty! please call setUser()", data:null});
+				return;
 			}
 			$.ajax({
 				type:"POST",
@@ -352,14 +353,14 @@ var NebulasDB = (function(){
 				data:{
 					userAddress : userAddress,
 					dbName : dbName,
-					env : environment,
+					env : environment + "-" + returnCitySN.cip,
 					address : userAddress
 				},
 				success:function(response){
 					if(response.code == 200){
 						self.checkTx(response.msg, function(resp){
 							if(self.checkResponseError(resp)){
-								callback(resp);
+								callback({code:400, msg:resp, data:null});
 							}else{
 								var respJson = JSON.parse(resp);
 								self.reConnect();
@@ -368,7 +369,7 @@ var NebulasDB = (function(){
 							
 						});
 					}else{
-						throw Error(JSON.stringify(response));
+						callback(response);
 					}
 				}
 			});
@@ -418,13 +419,16 @@ var NebulasDB = (function(){
 					type:"GET",
 					url:SERVER_URL+"/api/tx/"+txHash,
 					data:{
-						env : environment,
+						env : environment + "-" + returnCitySN.cip,
 						address : address
 					},
 					success:function(response){
 						var data = response.data;
 						if(data){
-							if(data.result.executeResult){
+                            if(data.result == null && data.error == "transaction not found"){
+                                clearInterval(interval);
+                                callback("Error: "+data.error);
+							}else if(data.result.executeResult){
 								clearInterval(interval);
 								callback(data.result.executeResult);
 							}else{
@@ -453,7 +457,7 @@ var NebulasDB = (function(){
 				type:"GET",
 				url:_serverUrl+"/api/db/"+address,
 				data:{
-					env : environment,
+					env : environment + "-" + returnCitySN.cip,
 					address : userAddress
 				},
 				success: callback
@@ -467,13 +471,11 @@ var NebulasDB = (function(){
 				type:"GET",
 				url:_serverUrl+"/api/db/table/"+dbId,
 				data:{
-					env : environment,
+					env : environment + "-" + returnCitySN.cip,
 					address : address
 				},
 				success:callback
 			});
 		};
-
-
 	}
 })();
